@@ -1,5 +1,5 @@
 
-package GreenGain;
+package GreenGain2;
 
 import java.util.HashMap;
 import javax.swing.JOptionPane;

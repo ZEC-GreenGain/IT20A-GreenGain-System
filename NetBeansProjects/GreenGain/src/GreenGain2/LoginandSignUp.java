@@ -1,8 +1,6 @@
 
 package GreenGain2;
 
-import GreenGain.*;
-
 
 public class LoginandSignUp {
     

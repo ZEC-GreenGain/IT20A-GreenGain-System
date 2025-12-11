@@ -4,7 +4,6 @@
  */
 package GreenGain2;
 
-import GreenGain.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JOptionPane;
