@@ -1,10 +1,8 @@
 
 package GreenGain2;
 
-import GreenGain.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
@@ -209,27 +207,26 @@ public class Login extends javax.swing.JFrame {
             encryptedPass += (char) (ch + key);
         }
 
-        String filePath = "C:\\Users\\elizh\\OneDrive\\Documents\\GreenGain\\src\\user.txt";
+        String filePath = "C:\\Users\\elizh\\OneDrive\\Documents\\users-data.txt";
 
         try {
             
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            String line;
-            boolean authenticated = false;
-
-            while ((line = reader.readLine()) != null) {
-                String[] credentials = line.split(",");
-                if (credentials.length == 2) {
-                    String storedUser = credentials[0];
-                    String storedPass = credentials[1];
-
-                    if (user.equalsIgnoreCase(storedUser) && encryptedPass.equals(storedPass)) {
-                        authenticated = true;
-                        break;
-                    }
-                }
-            }
-            reader.close();
+            boolean authenticated;
+             try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                 String line;
+                 authenticated = false;
+                 while ((line = reader.readLine()) != null) {
+                     String[] credentials = line.split(",");
+                     if (credentials.length == 2) {
+                         String storedUser = credentials[0];
+                         String storedPass = credentials[1];
+                         
+                         if (user.equalsIgnoreCase(storedUser) && encryptedPass.equals(storedPass)) {
+                             authenticated = true;
+                             break;
+                         }
+                     }
+                 }}
 
             if (authenticated) {
                 Dashboard dash = new Dashboard();
@@ -240,9 +237,7 @@ public class Login extends javax.swing.JFrame {
             }
 
             
-            FileWriter writer = new FileWriter(filePath, true);
-            writer.write(user + "," + encryptedPass + "\n");
-            writer.close();
+          
 
         } catch (IOException e) {
             System.out.println("ERROR");
@@ -272,13 +267,13 @@ public class Login extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Final_Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Final_Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Final_Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Final_Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
