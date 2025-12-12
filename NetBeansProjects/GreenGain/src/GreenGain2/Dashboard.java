@@ -1,17 +1,53 @@
 
 package GreenGain2;
 
+
+import GreenGain2.DataModel;
 import GreenGain2.Login;
 import GreenGain2.TrashSubmission;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
-   
 
 public class Dashboard extends javax.swing.JFrame {
+    public static Dashboard instance;
+     public void refreshLeaderboard() {
+        DefaultTableModel model = (DefaultTableModel) tblLeaderboard.getModel();
+        model.setRowCount(0);
 
+        if (DataModel.userPoints.isEmpty()) {
+            model.addRow(new Object[]{"⏳ Waiting", "No submissions yet", "", ""});
+            return;
+        }
+
+        AtomicInteger rank = new AtomicInteger(1); 
+
+        DataModel.userPoints.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEach(entry -> {
+
+                    String name = entry.getKey();
+                    int points = entry.getValue();
+                    double contributionKg = DataModel.userContributions.getOrDefault(name, 0.0);
+
+                    int currentRank = rank.getAndIncrement(); 
+
+                    model.addRow(new Object[]{
+                        currentRank, 
+                        name,
+                        contributionKg,
+                        points
+                    });
+                });
+    }
+    
     
     public Dashboard() {
         initComponents();
+        instance = this;
+        refreshLeaderboard();
     }
 
    
@@ -22,7 +58,7 @@ public class Dashboard extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblLeaderboard = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -44,10 +80,10 @@ public class Dashboard extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(0, 102, 51));
         jPanel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jTable1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTable1.setForeground(new java.awt.Color(0, 102, 51));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblLeaderboard.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tblLeaderboard.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        tblLeaderboard.setForeground(new java.awt.Color(0, 102, 51));
+        tblLeaderboard.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -68,7 +104,7 @@ public class Dashboard extends javax.swing.JFrame {
                 "Status", "Name", "Contribution (kg)", "Points Earned"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblLeaderboard);
 
         jPanel5.setBackground(new java.awt.Color(0, 153, 0));
         jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -296,68 +332,68 @@ public class Dashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void trashSubBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trashSubBtnActionPerformed
-          // Open the Trash Submission form
-    TrashSubmission trashForm = new TrashSubmission();
-    trashForm.setVisible(true);
-    dispose();
+        // Open the Trash Submission form
+        TrashSubmission trashForm = new TrashSubmission();
+        trashForm.setVisible(true);
+        dispose();
 
     }//GEN-LAST:event_trashSubBtnActionPerformed
 
     private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
         int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to logout?",
-            "Logout Confirmation",
-            JOptionPane.YES_NO_OPTION
+                this,
+                "Are you sure you want to logout?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
             Login loginPage = new Login();
             loginPage.setVisible(true);
-            dispose(); // Close the dashboard
+            dispose();
         }
     }//GEN-LAST:event_LogOutBtnActionPerformed
 
     private void LeaderboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LeaderboardBtnActionPerformed
-        // TODO add your handling code here:
-         Leaderboard leaderboardForm = new Leaderboard();
-    leaderboardForm.setVisible(true);
-    dispose();
+
+        Leaderboard leaderboardForm = new Leaderboard();
+        leaderboardForm.setVisible(true);
+        dispose();
     }//GEN-LAST:event_LeaderboardBtnActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+     */
+    try {
+        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+    } catch (ClassNotFoundException ex) {
+        java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+        java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+        java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+    //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Dashboard().setVisible(true);
-            }
-        });
+    /* Create and display the form */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new Dashboard().setVisible(true);
+        }
+    });
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -375,7 +411,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblLeaderboard;
     private javax.swing.JButton trashSubBtn;
     // End of variables declaration//GEN-END:variables
 }

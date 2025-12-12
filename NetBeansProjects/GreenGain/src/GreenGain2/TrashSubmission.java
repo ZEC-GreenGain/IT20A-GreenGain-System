@@ -1,4 +1,3 @@
-
 package GreenGain2;
 
 import java.util.Map;
@@ -12,12 +11,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TrashSubmission extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TrashSubmission
-     */
+    public static TrashSubmission instance;
+
     public TrashSubmission() {
-        
+
         initComponents();
+        instance = this;
+        refreshLeaderboard();
     }
 
     /**
@@ -52,9 +52,7 @@ public class TrashSubmission extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         spinnerPlastic = new javax.swing.JSpinner();
-        jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        AddTrashBtn = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         spinnerPaper = new javax.swing.JSpinner();
@@ -306,30 +304,12 @@ public class TrashSubmission extends javax.swing.JFrame {
                 .addComponent(jLabel10))
         );
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 102, 51));
-        jButton3.setText("Add");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        AddTrashBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        AddTrashBtn.setForeground(new java.awt.Color(0, 102, 51));
+        AddTrashBtn.setText("Add");
+        AddTrashBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(0, 102, 255));
-        jButton5.setText("Edit");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(153, 0, 0));
-        jButton4.setText("Delete");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                AddTrashBtnActionPerformed(evt);
             }
         });
 
@@ -385,18 +365,13 @@ public class TrashSubmission extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(57, 57, 57)
                                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(77, 77, 77)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(spinnerPlastic, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton3))))
+                                .addComponent(spinnerPlastic, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(85, 85, 85)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
@@ -408,16 +383,19 @@ public class TrashSubmission extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(21, 21, 21)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(spinnerPaper, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton5))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(spinnerMetal, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton4))
-                                .addGap(75, 75, 75))))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(AddTrashBtn)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(spinnerPaper, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(spinnerMetal, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(75, 75, 75))))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))))
                 .addGap(2, 2, 2))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(204, 204, 204)
@@ -460,11 +438,7 @@ public class TrashSubmission extends javax.swing.JFrame {
                             .addComponent(spinnerPaper, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(spinnerPlastic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(30, 30, 30)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton4)
-                        .addComponent(jButton5)))
+                .addComponent(AddTrashBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -502,14 +476,19 @@ public class TrashSubmission extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LeaderboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LeaderboardBtnActionPerformed
-        // TODO add your handling code here:
-        Leaderboard lb = new Leaderboard();
-        lb.setVisible(true);
+
+        if (Leaderboard.instance == null) {
+            new Leaderboard().setVisible(true);
+        } else {
+            Leaderboard.instance.refreshLeaderboard();
+            Leaderboard.instance.setVisible(true);
+        }
+
         this.dispose();
     }//GEN-LAST:event_LeaderboardBtnActionPerformed
 
     private void DashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DashboardBtnActionPerformed
-        // TODO add your handling code here:
+
         Dashboard dash = new Dashboard();
         dash.setVisible(true);
         this.dispose();
@@ -517,32 +496,24 @@ public class TrashSubmission extends javax.swing.JFrame {
 
     private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
         int confirm = JOptionPane.showConfirmDialog(
-        this,
-        "Are you sure you want to logout?",
-        "Logout Confirmation",
-        JOptionPane.YES_NO_OPTION
-    );
+                this,
+                "Are you sure you want to logout?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
+        );
 
-    if (confirm == JOptionPane.YES_OPTION) {
-        Login loginPage = new Login();
-        loginPage.setVisible(true);
-        dispose(); // Close the dashboard
-    }
+        if (confirm == JOptionPane.YES_OPTION) {
+            Login loginPage = new Login();
+            loginPage.setVisible(true);
+            dispose(); 
+        }
     }//GEN-LAST:event_LogOutBtnActionPerformed
 
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void AddTrashBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTrashBtnActionPerformed
         String name = txtName.getText().trim();
 
         if (name.isEmpty()) {
@@ -550,35 +521,43 @@ public class TrashSubmission extends javax.swing.JFrame {
             return;
         }
 
-// Get values from each spinner
-        double plasticKg = ((Number) spinnerPlastic.getValue()).doubleValue();// 1kg = 10 points
-        double paperKg = ((Number) spinnerPaper.getValue()).doubleValue(); // 1kg = 5 points
-        double metalKg = ((Number) spinnerMetal.getValue()).doubleValue();// 1kg = 15 points
 
-// Validate inputs
+        double plasticKg = ((Number) spinnerPlastic.getValue()).doubleValue();
+        double paperKg = ((Number) spinnerPaper.getValue()).doubleValue();
+        double metalKg = ((Number) spinnerMetal.getValue()).doubleValue();
+
+
         if (plasticKg < 0 || paperKg < 0 || metalKg < 0) {
             JOptionPane.showMessageDialog(this, "Please enter non-negative values for all materials.");
             return;
         }
 
-// Calculate total kg and points
+
         double totalKg = plasticKg + paperKg + metalKg;
         int totalPoints = (int) (plasticKg * 10 + paperKg * 5 + metalKg * 15);
 
-// Update DataModel
+// Update DataModel maps
         DataModel.userContributions.put(name, totalKg);
         DataModel.userPoints.put(name, totalPoints);
 
-// Refresh table
-        updateLeaderboardDisplay();
+//   Add to submission history (ArrayList)
+        DataModel.submissionHistory.add(name + " submitted " + totalKg + "kg");
 
-// Clear input fields
+//  Refresh Leaderboard if open
+        if (Leaderboard.instance != null) {
+            Leaderboard.instance.refreshLeaderboard();
+        }
+
+// Refresh table in this JFrame
+        refreshLeaderboard();
+
+// Clear inputs
         txtName.setText("");
         spinnerPlastic.setValue(0.0);
         spinnerPaper.setValue(0.0);
         spinnerMetal.setValue(0.0);
 
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_AddTrashBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -610,18 +589,22 @@ public class TrashSubmission extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TrashSubmission().setVisible(true);
+                if (TrashSubmission.instance == null) {
+                    new TrashSubmission().setVisible(true);
+                } else {
+                    TrashSubmission.instance.refreshLeaderboard(); // ✅ reload data
+                    TrashSubmission.instance.setVisible(true);
+                }
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddTrashBtn;
     private javax.swing.JButton DashboardBtn;
     private javax.swing.JButton LeaderboardBtn;
     private javax.swing.JButton LogOutBtn;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -652,7 +635,7 @@ public class TrashSubmission extends javax.swing.JFrame {
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 
-    private void updateLeaderboardDisplay() {
+    private void refreshLeaderboard() {
         DefaultTableModel model = (DefaultTableModel) tblLeaderboard.getModel();
         model.setRowCount(0);
 
@@ -674,7 +657,7 @@ public class TrashSubmission extends javax.swing.JFrame {
                     double contributionKg = DataModel.userContributions.getOrDefault(name, 0.0);
 
                     model.addRow(new Object[]{
-                        currentRank, 
+                        currentRank,
                         name,
                         contributionKg,
                         points

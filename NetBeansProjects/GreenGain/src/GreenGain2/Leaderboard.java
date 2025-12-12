@@ -1,39 +1,49 @@
-
 package GreenGain2;
 
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author elizh
- */
 public class Leaderboard extends javax.swing.JFrame {
-public void updateLeaderboardDisplay() {
-    DefaultTableModel model = (DefaultTableModel) tblLeaderboard.getModel();
-    model.setRowCount(0); // Clear existing rows
+    
+    public static Leaderboard instance;
 
-    if (DataModel.userPoints.isEmpty()) {
-        model.addRow(new Object[]{"⏳ Waiting", "No submissions yet", "", ""});
-        return;
+    public void refreshLeaderboard() {
+        DefaultTableModel model = (DefaultTableModel) tblLeaderboard.getModel();
+        model.setRowCount(0);
+
+        if (DataModel.userPoints.isEmpty()) {
+            model.addRow(new Object[]{"⏳ Waiting", "No submissions yet", "", ""});
+            return;
+        }
+
+        AtomicInteger rank = new AtomicInteger(1); 
+
+        DataModel.userPoints.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEach(entry -> {
+
+                    String name = entry.getKey();
+                    int points = entry.getValue();
+                    double contributionKg = DataModel.userContributions.getOrDefault(name, 0.0);
+
+                    int currentRank = rank.getAndIncrement(); 
+
+                    model.addRow(new Object[]{
+                        currentRank, 
+                        name,
+                        contributionKg,
+                        points
+                    });
+                });
     }
-
-    DataModel.userPoints.entrySet().stream()
-        .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-        .limit(10)
-        .forEach(entry -> {
-            String name = entry.getKey();
-            int points = entry.getValue();
-            double contributionKg = DataModel.userContributions.getOrDefault(name, 0.0); // Assuming you track kg separately
-            String status = "✅ Active"; // You can customize this based on rank or recent activity
-
-            model.addRow(new Object[]{status, name, contributionKg, points});
-        });
-}
 
     public Leaderboard() {
         initComponents();
+        instance = this;
+        refreshLeaderboard();
     }
 
     /**
@@ -60,7 +70,6 @@ public void updateLeaderboardDisplay() {
         tblLeaderboard = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         SearchBar = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -241,8 +250,6 @@ public void updateLeaderboardDisplay() {
             }
         });
 
-        jLabel4.setText("jLabel4");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -255,10 +262,8 @@ public void updateLeaderboardDisplay() {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(102, 102, 102))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(SearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))))
+                        .addGap(45, 45, 45))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -266,9 +271,7 @@ public void updateLeaderboardDisplay() {
                 .addContainerGap(31, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                .addComponent(SearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -308,43 +311,41 @@ public void updateLeaderboardDisplay() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void TrashSubBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TrashSubBtnActionPerformed
-        // TODO add your handling code here:
-        Leaderboard lb = new Leaderboard();
-        lb.setVisible(true);
+
+        TrashSubmission trashsub = new TrashSubmission();
+        trashsub.setVisible(true);
         this.dispose();
+
     }//GEN-LAST:event_TrashSubBtnActionPerformed
 
     private void DashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DashboardBtnActionPerformed
-        // TODO add your handling code here:
-         Dashboard dash = new Dashboard(); 
-    dash.setVisible(true);            
-    this.dispose(); 
+
+        Dashboard dash = new Dashboard();
+        dash.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_DashboardBtnActionPerformed
 
     private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
         int confirm = JOptionPane.showConfirmDialog(
-        this,
-        "Are you sure you want to logout?",
-        "Logout Confirmation",
-        JOptionPane.YES_NO_OPTION
-    );
+                this,
+                "Are you sure you want to logout?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
+        );
 
-    if (confirm == JOptionPane.YES_OPTION) {
-        Login loginPage = new Login();
-        loginPage.setVisible(true);
-        dispose(); // Close the dashboard
-    }
+        if (confirm == JOptionPane.YES_OPTION) {
+            Login loginPage = new Login();
+            loginPage.setVisible(true);
+            dispose();
+        }
     }//GEN-LAST:event_LogOutBtnActionPerformed
 
     private void SearchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBarActionPerformed
-        // TODO add your handling code here:
+        searchUser();
     }//GEN-LAST:event_SearchBarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -367,7 +368,7 @@ public void updateLeaderboardDisplay() {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Leaderboard().setVisible(true);
@@ -383,7 +384,6 @@ public void updateLeaderboardDisplay() {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -393,4 +393,51 @@ public void updateLeaderboardDisplay() {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblLeaderboard;
     // End of variables declaration//GEN-END:variables
+
+    private void searchUser() {
+    String searchTerm = SearchBar.getText().trim().toLowerCase();
+
+    DefaultTableModel model = (DefaultTableModel) tblLeaderboard.getModel();
+    model.setRowCount(0);
+
+
+    if (searchTerm.isEmpty()) {
+        refreshLeaderboard();
+        return;
+    }
+
+    ArrayList<String> matches = new ArrayList<>();
+
+
+    for (String name : DataModel.userPoints.keySet()) {
+        if (name.toLowerCase().contains(searchTerm)) {
+            matches.add(name);
+        }
+    }
+
+    // Display results
+    if (!matches.isEmpty()) {
+        for (String name : matches) {
+            int points = DataModel.userPoints.get(name);
+            double contributionKg = DataModel.userContributions.getOrDefault(name, 0.0);
+
+            model.addRow(new Object[]{
+                "✅ Match",
+                name,
+                contributionKg,
+                points
+            });
+        }
+    } else {
+        model.addRow(new Object[]{
+            "❌ Not Found",
+            searchTerm,
+            "",
+            ""
+        });
+    }
+}
+
+
+
 }
